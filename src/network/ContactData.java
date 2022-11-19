@@ -1,16 +1,16 @@
-package gui;
+package network;
 
 import network.*;
 
 import javax.swing.table.AbstractTableModel;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * TODO javadoc
  */
 public class ContactData extends AbstractTableModel {
-    final List<Contact> contacts;
+    public final List<Contact> contacts;
 
     public ContactData(List<Contact> c) {
         contacts = c;
@@ -20,6 +20,7 @@ public class ContactData extends AbstractTableModel {
     @Override
     public int getRowCount() { return contacts.size(); }
 
+
     @Override
     public int getColumnCount() { return 1; }
 
@@ -28,7 +29,7 @@ public class ContactData extends AbstractTableModel {
         if(rowIndex >= contacts.size() || columnIndex != 0) {
             return null;
         } else {
-            return contacts.get(rowIndex);
+            return contacts.get(rowIndex).getName();
         }
     }
 
@@ -42,7 +43,8 @@ public class ContactData extends AbstractTableModel {
         return String.class;
     }
 
-    public void addContact() {
-        //TODO what parameters
+    public void addContact(String name, String ip) {
+        contacts.add(new Contact(name, ip));
+        fireTableDataChanged();
     }
 }

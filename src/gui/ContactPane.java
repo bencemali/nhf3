@@ -1,0 +1,83 @@
+package gui;
+
+import network.ContactData;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+/**
+ * TODO javadoc
+ */
+public class ContactPane extends JPanel {
+    private final MainFrame parentFrame;
+    private final ContactData contactData;
+    private JPanel addPanel;
+    private JLabel nameLabel;
+    private JTextField nameField;
+    private JLabel ipLabel;
+    private JTextField ipField;
+    private JButton addButton;
+
+    public ContactPane(ContactData data, MainFrame frame) {
+        parentFrame = frame;
+        contactData = data;
+
+        setPreferredSize(new Dimension(180, 600));
+        setLayout(new BorderLayout());
+        JTable table = new JTable(contactData);
+        table.setTableHeader(null);
+        table.setFillsViewportHeight(true);
+        table.setRowHeight(30);
+        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
+        renderer.setHorizontalAlignment(JLabel.CENTER);
+        table.getColumnModel().getColumn(0).setCellRenderer(renderer);
+        table.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                //TODO open appropriate chat
+            }
+        });
+        JScrollPane scrollPane = new JScrollPane(table);
+        add(scrollPane, BorderLayout.CENTER);
+
+        nameLabel = new JLabel("Name: ");
+        nameField = new JTextField(20);
+        ipLabel = new JLabel("Ip: ");
+        ipField = new JTextField(20);
+        addPanel = new JPanel(new GridBagLayout());
+        addButton = new JButton("Add Connection");
+        addButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                contactData.addContact(nameField.getText(), ipField.getText());
+            }
+        });
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 0.2;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        addPanel.add(nameLabel, gbc);
+        gbc.weightx = 0.8;
+        gbc.gridx = 1;
+        addPanel.add(nameField, gbc);
+        gbc.weightx = 0.2;
+        gbc.gridy = 1;
+        gbc.gridx = 0;
+        addPanel.add(ipLabel, gbc);
+        gbc.weightx = 0.2;
+        gbc.gridx = 1;
+        addPanel.add(ipField, gbc);
+        gbc.weightx = 1;
+        gbc.gridy = 2;
+        gbc.gridx = 0;
+        gbc.gridwidth = 2;
+        addPanel.add(addButton, gbc);
+        add(addPanel, BorderLayout.SOUTH);
+    }
+}

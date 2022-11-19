@@ -1,53 +1,82 @@
 package gui;
 
+import network.Contact;
+import network.ContactData;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 
 /**
  * TODO javadoc
  */
 public class MainFrame extends JFrame {
-    private ContactData data;
-    private JMenuBar menubar;
-    private ContactList contactlist;
-    private ChatPane chatpane;
+    private ContactData contactData;
+    private JMenuBar menuBar;
+    private ContactPane contactPane;
+    private ChatPane chatPane;
 
-    public MainFrame() {
+    public MainFrame(ContactData data) {
         super("Chat application");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        contactData = data;
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        setSize(new Dimension(1000, 600));
         setMinimumSize(new Dimension(1000, 600));
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        }
-        catch(Exception e) {}
-
-        startProcedure();
-
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                exitProcedure();
-            }
-        });
 
         initComponents();
+        setVisible(true);
     }
 
     private void initComponents() {
         //TODO initialize:
         // menubar
-        // contact list
+        // contact list + double click event handler
         // chat pane
+        initMenuBar();
+        contactPane = new ContactPane(contactData, this);
+        add(contactPane, BorderLayout.WEST);
     }
 
-    private void startProcedure() {
-        //TODO load into
-    }
+    private void initMenuBar() {
+        menuBar = new JMenuBar();
 
-    private void exitProcedure() {
-        //TODO save off
+        //File menu
+        JMenu fileMenu = new JMenu("File");
+        JMenuItem exportXml = new JMenuItem("Export to XML");
+        exportXml.addActionListener(e -> {
+            //TODO open dialog panel
+        });
+        JMenuItem importXml = new JMenuItem("Import from XML");
+        importXml.addActionListener(e -> {
+            //TODO open dialog panel
+        });
+        JMenuItem saveOut = new JMenuItem("Save to .dat");
+        saveOut.addActionListener(e -> {
+            //TODO open dialog panel
+        });
+        JMenuItem loadIn = new JMenuItem("Load from .dat");
+        loadIn.addActionListener(e -> {
+            //TODO open dialog panel
+        });
+        fileMenu.add(exportXml);
+        fileMenu.add(importXml);
+        fileMenu.add(saveOut);
+        fileMenu.add(loadIn);
+        menuBar.add(fileMenu);
+
+        //Contacts menu
+        JMenu contactMenu = new JMenu("Contacts");
+        JMenuItem add = new JMenuItem("Add");
+        add.addActionListener(e -> {
+            //TODO open dialog panel
+        });
+        JMenuItem delete = new JMenuItem("Delete");
+        delete.addActionListener(e -> {
+            //TODO open dialog panel
+        });
+        contactMenu.add(add);
+        contactMenu.add(delete);
+        menuBar.add(contactMenu);
+        //TODO more menus
+        setJMenuBar(menuBar);
     }
 }
