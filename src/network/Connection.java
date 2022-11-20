@@ -87,6 +87,10 @@ public class Connection {
     }
 
     public boolean isOpen() {
+        System.out.println("Connection::isOpen");
+        if(socket == null) {
+            return false;
+        }
         if(socket.isConnected() && !socket.isClosed()) {
             return true;
         } else {
@@ -95,6 +99,7 @@ public class Connection {
     }
 
     public void reconnect() {
+        System.out.println("Connection::reconnect");
         try {
             socket = new Socket(contact.getIp(), serverPort);
             output = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
@@ -108,6 +113,7 @@ public class Connection {
     }
 
     public boolean send(String message) {
+        System.out.println("Connection::send");
         if(isOpen()) {
             output.println(message);
             output.flush();

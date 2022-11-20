@@ -28,12 +28,23 @@ public class Contact implements Serializable {
     }
 
     public void connect() {
+        System.out.println("Contact::connect");
         if(connection == null) {
             connection = new Connection(this);
         }
     }
 
+    public boolean isConnected() {
+        System.out.println("Contact::isConnected");
+        if(connection == null) {
+            return false;
+        } else {
+            return connection.isOpen();
+        }
+    }
+
     public void setConnection(Connection connection) {
+        System.out.println("Contact::setConnection");
         this.connection = connection;
     }
 
@@ -44,6 +55,7 @@ public class Contact implements Serializable {
     public List<Message> getMessages() { return messages; }
 
     public void receiveMessage(String message) {
+        System.out.println("Contact::receiveMessage");
         messages.add(new Message(message, false));
         if(listener != null) {
             listener.newMessage();
@@ -51,12 +63,17 @@ public class Contact implements Serializable {
     }
 
     public void sendMessage(String message) {
+        System.out.println("Contact::sendMessage");
         if(connection.send(message)) {
             messages.add(new Message(message, true));
+        }
+        if(listener != null) {
+            listener.newMessage();
         }
     }
 
     public void setMessageListener(MessageListener listener) {
+        System.out.println("Contact::setMessageListener");
         this.listener = listener;
     }
 }
