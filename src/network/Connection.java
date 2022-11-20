@@ -69,6 +69,7 @@ public class Connection {
             while(running.get()) {
                 try {
                     message = input.readLine();
+                    System.out.println(message);
                 } catch(IOException e) {}
                 if(message != null) {
                     contact.receiveMessage(message);
@@ -106,13 +107,12 @@ public class Connection {
         inputHandler.start();
     }
 
-    public void send(String message) {
-        if(!isOpen()) {
-            reconnect();
-        }
-        if(output != null) {
+    public boolean send(String message) {
+        if(isOpen()) {
             output.println(message);
             output.flush();
+            return true;
         }
+        return false;
     }
 }

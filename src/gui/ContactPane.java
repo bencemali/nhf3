@@ -68,6 +68,7 @@ public class ContactPane extends JPanel {
     }
 
     public int getIndexForClick(MouseEvent e) {
+        System.out.println("getIndexForClick()");
         return table.rowAtPoint(e.getPoint());
     }
 }

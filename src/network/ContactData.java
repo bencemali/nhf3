@@ -17,7 +17,6 @@ public class ContactData extends AbstractTableModel {
     @Override
     public int getRowCount() { return contacts.size(); }
 
-
     @Override
     public int getColumnCount() { return 1; }
 
@@ -53,4 +52,23 @@ public class ContactData extends AbstractTableModel {
     public Contact getContact(int rowIndex) {
         return contacts.get(rowIndex);
     }
+
+    public Contact getContact(String ipAddress) {
+        for(Contact contact : contacts) {
+            if(contact.getIp().equals(ipAddress)) {
+                return contact;
+            }
+        }
+        return null;
+    }
+
+    public boolean haveContact(String ipAddress) {
+        for(Contact contact : contacts) {
+            if(contact.getIp().equals(ipAddress)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

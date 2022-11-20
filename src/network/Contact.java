@@ -27,6 +27,16 @@ public class Contact implements Serializable {
         listener = null;
     }
 
+    public void connect() {
+        if(connection == null) {
+            connection = new Connection(this);
+        }
+    }
+
+    public void setConnection(Connection connection) {
+        this.connection = connection;
+    }
+
     public String getName() { return name; }
 
     public String getIp() { return ipAddress; }
@@ -41,8 +51,9 @@ public class Contact implements Serializable {
     }
 
     public void sendMessage(String message) {
-        messages.add(new Message(message, true));
-        connection.send(message);
+        if(connection.send(message)) {
+            messages.add(new Message(message, true));
+        }
     }
 
     public void setMessageListener(MessageListener listener) {

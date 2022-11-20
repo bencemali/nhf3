@@ -28,10 +28,15 @@ public class Server extends Thread {
                 socket = serverSocket.accept();
             } catch(IOException e) {}
             if(socket != null) {
-                Connection connection = new Connection(null, socket);
-                Contact contact = new Contact("New connection", socket.getInetAddress().toString(), connection);
-                contactData.addContact(contact);
-                connection.setContact(contact);
+                if(!contactData.haveContact(socket.getInetAddress().toString())){
+                    Connection connection = new Connection(null, socket);
+                    Contact contact = new Contact("New connection", socket.getInetAddress().toString(), connection);
+                    contactData.addContact(contact);
+                    connection.setContact(contact);
+                } else {
+                    Contact contact = contactData.getContact(socket.getInetAddress().toString());
+                    contact.setConnection(new Connection(contact, socket));
+                }
             }
         }
     }
