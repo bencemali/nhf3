@@ -20,11 +20,10 @@ public class Main {
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                closeAllSockets();
+                server.closeAllSockets();
                 saveData(contactData);
             }
         });
-
     }
 
     static private ContactData loadData() {
@@ -46,9 +45,5 @@ public class Main {
             oos.close();
         } catch(IOException e) {}
         System.exit(0);
-    }
-
-    static private void closeAllSockets() {
-        server.closeAllSockets();
     }
 }

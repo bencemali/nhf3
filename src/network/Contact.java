@@ -8,17 +8,23 @@ public class Contact implements Serializable {
     private final String name;
     private final String ipAddress;
     private final List<Message> messages;
-    transient final private Connection connection;
+    transient private Connection connection;
     transient private MessageListener listener; //???? 1 listener
 
     public Contact(String name, String ipAddress) {
         this.name = name;
         this.ipAddress = ipAddress;
         messages = new ArrayList<>();
-        System.out.println("Before connection");
         connection = new Connection(this);
         listener = null;
-        System.out.println("Ending ctor");
+    }
+
+    public Contact(String name, String ipAddress, Connection connection) {
+        this.name = name;
+        this.ipAddress = ipAddress;
+        messages = new ArrayList<>();
+        this.connection = connection;
+        listener = null;
     }
 
     public String getName() { return name; }

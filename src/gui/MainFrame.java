@@ -33,7 +33,7 @@ public class MainFrame extends JFrame {
         // chat pane
         initMenuBar();
         JTable table = new JTable(contactData);
-        contactPane = new ContactPane(contactData, this, table);
+        contactPane = new ContactPane(contactData, table);
         table.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {

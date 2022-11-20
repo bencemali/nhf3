@@ -42,7 +42,11 @@ public class ContactData extends AbstractTableModel {
 
     public void addContact(String name, String ip) {
         contacts.add(new Contact(name, ip));
-        System.out.println("After add()");
+        fireTableDataChanged();
+    }
+
+    public void addContact(Contact contact) {
+        contacts.add(contact);
         fireTableDataChanged();
     }
 

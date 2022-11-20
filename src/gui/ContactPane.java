@@ -7,19 +7,16 @@ import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 /**
  * TODO javadoc
  */
 public class ContactPane extends JPanel {
-    private final MainFrame parentFrame;
     private final ContactData contactData;
     private final JTable table;
 
-    public ContactPane(ContactData data, MainFrame frame, JTable contactTable) {
-        parentFrame = frame;
+    public ContactPane(ContactData data, JTable contactTable) {
         contactData = data;
 
         setPreferredSize(new Dimension(180, 600));
@@ -44,7 +41,6 @@ public class ContactPane extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 contactData.addContact(nameField.getText(), ipField.getText());
-                System.out.println("After addContact()");
             }
         });
         GridBagConstraints gbc = new GridBagConstraints();
