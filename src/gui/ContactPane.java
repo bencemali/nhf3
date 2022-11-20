@@ -16,45 +16,35 @@ import java.awt.event.MouseEvent;
 public class ContactPane extends JPanel {
     private final MainFrame parentFrame;
     private final ContactData contactData;
-    private JPanel addPanel;
-    private JLabel nameLabel;
-    private JTextField nameField;
-    private JLabel ipLabel;
-    private JTextField ipField;
-    private JButton addButton;
+    private final JTable table;
 
-    public ContactPane(ContactData data, MainFrame frame) {
+    public ContactPane(ContactData data, MainFrame frame, JTable contactTable) {
         parentFrame = frame;
         contactData = data;
 
         setPreferredSize(new Dimension(180, 600));
         setLayout(new BorderLayout());
-        JTable table = new JTable(contactData);
+        table = contactTable;
         table.setTableHeader(null);
         table.setFillsViewportHeight(true);
         table.setRowHeight(30);
         DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
         renderer.setHorizontalAlignment(JLabel.CENTER);
         table.getColumnModel().getColumn(0).setCellRenderer(renderer);
-        table.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                //TODO open appropriate chat
-            }
-        });
         JScrollPane scrollPane = new JScrollPane(table);
         add(scrollPane, BorderLayout.CENTER);
 
-        nameLabel = new JLabel("Name: ");
-        nameField = new JTextField(20);
-        ipLabel = new JLabel("Ip: ");
-        ipField = new JTextField(20);
-        addPanel = new JPanel(new GridBagLayout());
-        addButton = new JButton("Add Connection");
+        JLabel nameLabel = new JLabel("Name: ");
+        JTextField nameField = new JTextField(20);
+        JLabel ipLabel = new JLabel("Ip: ");
+        JTextField ipField = new JTextField(20);
+        JPanel addPanel = new JPanel(new GridBagLayout());
+        JButton addButton = new JButton("Add Connection");
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 contactData.addContact(nameField.getText(), ipField.getText());
+                System.out.println("After addContact()");
             }
         });
         GridBagConstraints gbc = new GridBagConstraints();
@@ -79,5 +69,9 @@ public class ContactPane extends JPanel {
         gbc.gridwidth = 2;
         addPanel.add(addButton, gbc);
         add(addPanel, BorderLayout.SOUTH);
+    }
+
+    public int getIndexForClick(MouseEvent e) {
+        return table.rowAtPoint(e.getPoint());
     }
 }

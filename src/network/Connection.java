@@ -13,10 +13,14 @@ public class Connection {
     public Connection(Contact contact) {
         this.contact = contact;
         try {
+            System.out.println("Before Socket()");
             socket = new Socket(contact.getIp(), serverPort);
+            System.out.println("After Socket()");
             output = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
             input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        } catch(Exception e) {}
+        } catch(Exception e) {
+            //TODO signal if unknown host
+        }
         InputHandler inputHandler = new InputHandler(input, contact);
     }
 
@@ -31,7 +35,6 @@ public class Connection {
         }
 
         public void run() {
-            //TODO read input + write to contact
             String message = null;
             while(true) {
                 try {
@@ -66,6 +69,9 @@ public class Connection {
     }
 
     public void send(String message) {
+        if(!isOpen()) {
+            reconnect();
+        }
         output.println(message);
         output.flush();
     }

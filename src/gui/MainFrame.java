@@ -1,10 +1,11 @@
 package gui;
 
-import network.Contact;
 import network.ContactData;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 /**
  * TODO javadoc
@@ -20,7 +21,6 @@ public class MainFrame extends JFrame {
         contactData = data;
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setSize(new Dimension(1000, 600));
-        setMinimumSize(new Dimension(1000, 600));
 
         initComponents();
         setVisible(true);
@@ -32,8 +32,20 @@ public class MainFrame extends JFrame {
         // contact list + double click event handler
         // chat pane
         initMenuBar();
-        contactPane = new ContactPane(contactData, this);
+        JTable table = new JTable(contactData);
+        contactPane = new ContactPane(contactData, this, table);
+        table.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int idx = contactPane.getIndexForClick(e);
+                if(idx != -1) {
+                    chatPane.displayChat(idx);
+                }
+            }
+        });
         add(contactPane, BorderLayout.WEST);
+        chatPane = new ChatPane(contactData);
+        add(chatPane, BorderLayout.CENTER);
     }
 
     private void initMenuBar() {

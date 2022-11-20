@@ -1,10 +1,7 @@
 package network;
 
-import network.*;
-
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * TODO javadoc
@@ -45,6 +42,11 @@ public class ContactData extends AbstractTableModel {
 
     public void addContact(String name, String ip) {
         contacts.add(new Contact(name, ip));
+        System.out.println("After add()");
         fireTableDataChanged();
+    }
+
+    public Contact getContact(int rowIndex) {
+        return contacts.get(rowIndex);
     }
 }
