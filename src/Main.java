@@ -15,7 +15,7 @@ public class Main {
     public static void main(String[] args) {
         contactData = loadData();
         server = new Server(contactData);
-        server.run();
+        server.start();
         frame = new MainFrame(contactData);
         frame.addWindowListener(new WindowAdapter() {
             @Override

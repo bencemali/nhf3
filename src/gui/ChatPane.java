@@ -25,6 +25,9 @@ public class ChatPane extends JPanel {
         JTextField messageTextField = new JTextField(40);
         sendPanel.add(messageTextField);
         JButton sendButton = new JButton("Send");
+        sendButton.addActionListener(e -> {
+            contactData.getContact(focused).sendMessage(messageTextField.getText());
+        });
         sendPanel.add(sendButton);
         setLayout(new BorderLayout());
         add(messagePanel, BorderLayout.CENTER);
