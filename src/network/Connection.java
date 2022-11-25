@@ -21,6 +21,11 @@ public class Connection {
                 output = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
                 input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 InputHandler inputHandler = new InputHandler(input, contact);
+                inputHandler.start();
+            } else {
+                socket = null;
+                output = null;
+                input = null;
             }
         } catch (Exception e) {
             //TODO signal if unknown host
@@ -55,6 +60,37 @@ public class Connection {
         }
     }
 
+    public boolean isConnected() {
+        if(socket == null) return false;
+        return socket.isConnected();
+    }
+
+    public boolean send(String message) {
+        System.out.println("Connection::send");
+        if(socket.isConnected()) {
+            output.println(message);
+            output.flush();
+            return true;
+        }
+        return false;
+    }
+
+    public void dispose() {
+        if(socket != null) {
+            if(!socket.isClosed() && socket.isConnected()) {
+                try {
+                    socket.close();
+                } catch (Exception e) {
+                }
+            }
+        }
+        if(inputHandler != null) {
+            if(inputHandler.isRunning()) {
+                inputHandler.halt();
+            }
+        }
+    }
+
     private class InputHandler extends Thread {
         private BufferedReader input;
         private Contact contact;
@@ -69,9 +105,12 @@ public class Connection {
         public void run() {
             running.set(true);
             String message = null;
-            while(running.get() && Connection.this.isOpen()) {
+            while(running.get()) {
                 try {
                     message = input.readLine();
+                    if(message == null) {
+                        running.set(false);
+                    }
                     System.out.println(message);
                 } catch(IOException e) {}
                 if(message != null) {
@@ -80,48 +119,8 @@ public class Connection {
             }
         }
 
-        public void halt() {
-            running.set(false);
-        }
+        public void halt() { running.set(false); }
 
-        public boolean isRunning() {
-            return running.get();
-        }
-    }
-
-    public boolean isOpen() {
-        System.out.println("Connection::isOpen");
-        if(socket == null) {
-            return false;
-        }
-        if(socket.isConnected() && !socket.isClosed()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public void reconnect() {
-        System.out.println("Connection::reconnect");
-        try {
-            socket = new Socket(contact.getIp(), serverPort);
-            output = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
-            input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        } catch(Exception e) {}
-        if(inputHandler != null) {
-            inputHandler.halt();
-        }
-        InputHandler inputHandler = new InputHandler(input, contact);
-        inputHandler.start();
-    }
-
-    public boolean send(String message) {
-        System.out.println("Connection::send");
-        if(isOpen()) {
-            output.println(message);
-            output.flush();
-            return true;
-        }
-        return false;
+        public boolean isRunning() { return running.get(); }
     }
 }

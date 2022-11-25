@@ -4,6 +4,7 @@ import network.ContactData;
 import network.Message;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.util.List;
 
@@ -13,6 +14,7 @@ import java.util.List;
 public class ChatPane extends JPanel {
     private ContactData contactData;
     private int focused;
+    private JScrollPane messageScrollPane;
     private JPanel messagePanel;
     private JTextField messageTextField;
     private JButton sendButton;
@@ -31,11 +33,15 @@ public class ChatPane extends JPanel {
         sendPanel.add(messageTextField);
         sendButton = new JButton("Send");
         sendButton.addActionListener(e -> {
-            this.contactData.getContact(focused).sendMessage(messageTextField.getText());
+            if(!messageTextField.getText().equals("")) {
+                this.contactData.getContact(focused).sendMessage(messageTextField.getText());
+                messageTextField.setText("");
+            }
         });
         sendPanel.add(sendButton);
         setLayout(new BorderLayout());
-        add(messagePanel, BorderLayout.CENTER);
+        messageScrollPane = new JScrollPane(messagePanel);
+        add(messageScrollPane, BorderLayout.CENTER);
         add(sendPanel, BorderLayout.SOUTH);
     }
 
@@ -45,24 +51,28 @@ public class ChatPane extends JPanel {
         messagePanel.removeAll();
         messagePanel.validate();
         messagePanel.repaint();
-        messageTextField.setEditable(contactData.getContact(chatIndex).isConnected());
-        List<Message> messages = contactData.getContact(chatIndex).getMessages();
+        messageTextField.setEditable(contactData.getContact(focused).isConnected());
+        List<Message> messages = contactData.getContact(focused).getMessages();
         System.out.println("List of messages: ");
         for(Message m : messages) {
             System.out.println(m.message);
         }
-        contactData.getContact(chatIndex).connect();
+        contactData.getContact(focused).connect();
+        Border border = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1);
         for(Message message : messages) {
             JLabel messageLabel = new JLabel(message.message);
+            messageLabel.setBorder(border);
             if(message.owned) {
-                messageLabel.setBackground(Color.CYAN);
+                messageLabel.setBackground(new Color(201, 255, 252));
+                messageLabel.setOpaque(true);
                 messageLabel.setVisible(true);
             }
             messagePanel.add(messageLabel);
+            messagePanel.add(Box.createVerticalStrut(3));
             messagePanel.validate();
             messagePanel.repaint();
         }
-        this.contactData.getContact(chatIndex).setMessageListener(() -> {
+        this.contactData.getContact(focused).setMessageListener(() -> {
             System.out.println("MessageListener");
             if(focused == chatIndex) {
                 displayChat(focused);

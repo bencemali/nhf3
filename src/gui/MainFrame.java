@@ -1,5 +1,6 @@
 package gui;
 
+import network.Contact;
 import network.ContactData;
 
 import javax.swing.*;
@@ -27,10 +28,6 @@ public class MainFrame extends JFrame {
     }
 
     private void initComponents() {
-        //TODO initialize:
-        // menubar
-        // contact list + double click event handler
-        // chat pane
         initMenuBar();
         JTable table = new JTable(contactData);
         contactPane = new ContactPane(contactData, table);
@@ -39,7 +36,12 @@ public class MainFrame extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 int idx = contactPane.getIndexForClick(e);
                 if(idx != -1) {
-                    chatPane.displayChat(idx);
+                    if(SwingUtilities.isLeftMouseButton(e)) {
+                        chatPane.displayChat(idx);
+                    } else if(SwingUtilities.isRightMouseButton(e)) {
+                        ContactPopup popup = new ContactPopup(contactData.getContact(idx));
+                        popup.show(e.getComponent(), e.getX(), e.getY());
+                    }
                 }
             }
         });
@@ -90,5 +92,23 @@ public class MainFrame extends JFrame {
         menuBar.add(contactMenu);
         //TODO more menus
         setJMenuBar(menuBar);
+    }
+
+    class ContactPopup extends JPopupMenu {
+        public ContactPopup(Contact contact) {
+            JMenuItem rename = new JMenuItem("Rename");
+            rename.addActionListener(e -> {
+                String name = JOptionPane.showInputDialog("Enter new name:");
+                if(name != null) {
+                    contactData.renameContact(contact, name);
+                }
+            });
+            JMenuItem delete = new JMenuItem("Delete");
+            delete.addActionListener(e -> {
+                contactData.deleteContact(contact);
+            });
+            add(rename);
+            add(delete);
+        }
     }
 }

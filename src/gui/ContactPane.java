@@ -41,6 +41,8 @@ public class ContactPane extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 contactData.addContact(nameField.getText(), ipField.getText());
+                nameField.setText("");
+                ipField.setText("");
             }
         });
         GridBagConstraints gbc = new GridBagConstraints();

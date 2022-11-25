@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Contact implements Serializable {
-    private final String name;
+    private String name;
     private final String ipAddress;
     private final List<Message> messages;
     transient private Connection connection;
@@ -42,13 +42,23 @@ public class Contact implements Serializable {
         if(connection == null) {
             return false;
         } else {
-            return connection.isOpen();
+            return connection.isConnected();
         }
     }
 
     public void setConnection(Connection connection) {
         System.out.println("Contact::setConnection");
         this.connection = connection;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void dispose() {
+        if(connection != null) {
+            connection.dispose();
+        }
     }
 
     public String getName() { return name; }

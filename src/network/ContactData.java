@@ -1,6 +1,7 @@
 package network;
 
 import javax.swing.table.AbstractTableModel;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -49,6 +50,31 @@ public class ContactData extends AbstractTableModel {
         fireTableDataChanged();
     }
 
+    public void deleteContact(Contact contact) {
+        Iterator<Contact> it = contacts.iterator();
+        while(it.hasNext()) {
+            Contact c = it.next();
+            if(c == contact) {
+                c.dispose();
+                it.remove();
+                fireTableDataChanged();
+                break;
+            }
+        }
+    }
+
+    public void renameContact(Contact contact, String name) {
+        Iterator<Contact> it = contacts.iterator();
+        while(it.hasNext()) {
+            Contact c = it.next();
+            if(c == contact) {
+                c.setName(name);
+                fireTableDataChanged();
+                break;
+            }
+        }
+    }
+
     public Contact getContact(int rowIndex) {
         return contacts.get(rowIndex);
     }
@@ -70,5 +96,4 @@ public class ContactData extends AbstractTableModel {
         }
         return false;
     }
-
 }
