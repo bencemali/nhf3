@@ -9,14 +9,16 @@ public class Contact implements Serializable {
     private final String ipAddress;
     private final List<Message> messages;
     transient private Connection connection;
-    transient private MessageListener listener; //???? 1 listener
+    transient private MessageListener messageListener;
+    transient private ConnectionListener connectionListener;
 
     public Contact(String name, String ipAddress) {
         this.name = name;
         this.ipAddress = ipAddress;
         messages = new ArrayList<>();
         connection = new Connection(this);
-        listener = null;
+        messageListener = null;
+        connectionListener = null;
     }
 
     public Contact(String name, String ipAddress, Connection connection) {
@@ -24,7 +26,8 @@ public class Contact implements Serializable {
         this.ipAddress = ipAddress;
         messages = new ArrayList<>();
         this.connection = connection;
-        listener = null;
+        messageListener = null;
+        connectionListener = null;
     }
 
     public void connect() {
@@ -57,8 +60,8 @@ public class Contact implements Serializable {
     public void receiveMessage(String message) {
         System.out.println("Contact::receiveMessage");
         messages.add(new Message(message, false));
-        if(listener != null) {
-            listener.newMessage();
+        if(messageListener != null) {
+            messageListener.newMessage();
         }
     }
 
@@ -66,14 +69,21 @@ public class Contact implements Serializable {
         System.out.println("Contact::sendMessage");
         if(connection.send(message)) {
             messages.add(new Message(message, true));
-        }
-        if(listener != null) {
-            listener.newMessage();
+            if(messageListener != null) {
+                messageListener.newMessage();
+            }
+        } else {
+            connectionListener.connectionChanged(false);
         }
     }
 
     public void setMessageListener(MessageListener listener) {
         System.out.println("Contact::setMessageListener");
-        this.listener = listener;
+        messageListener = listener;
+    }
+
+    public void setConnectionListener(ConnectionListener listener) {
+        System.out.println("Contact::setConnectionListener");
+        connectionListener = listener;
     }
 }

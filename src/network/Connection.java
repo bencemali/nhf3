@@ -1,6 +1,7 @@
 package network;
 
 import java.io.*;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -15,13 +16,15 @@ public class Connection {
     public Connection(Contact contact) {
         this.contact = contact;
         try {
-            socket = new Socket(contact.getIp(), serverPort);
-            output = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
-            input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            if(InetAddress.getByName(contact.getIp()).isReachable(2000)) {
+                socket = new Socket(contact.getIp(), serverPort);
+                output = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
+                input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                InputHandler inputHandler = new InputHandler(input, contact);
+            }
         } catch (Exception e) {
             //TODO signal if unknown host
         }
-        InputHandler inputHandler = new InputHandler(input, contact);
     }
 
     public Connection(Contact contact, Socket socket) {
@@ -66,7 +69,7 @@ public class Connection {
         public void run() {
             running.set(true);
             String message = null;
-            while(running.get()) {
+            while(running.get() && Connection.this.isOpen()) {
                 try {
                     message = input.readLine();
                     System.out.println(message);

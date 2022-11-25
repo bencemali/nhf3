@@ -43,11 +43,9 @@ public class ChatPane extends JPanel {
         System.out.println("displayChat()");
         focused = chatIndex;
         messagePanel.removeAll();
-        if(contactData.getContact(chatIndex).isConnected()) {
-            messageTextField.setEditable(true);
-        } else {
-            messageTextField.setEditable(false);
-        }
+        messagePanel.validate();
+        messagePanel.repaint();
+        messageTextField.setEditable(contactData.getContact(chatIndex).isConnected());
         List<Message> messages = contactData.getContact(chatIndex).getMessages();
         System.out.println("List of messages: ");
         for(Message m : messages) {
@@ -68,6 +66,12 @@ public class ChatPane extends JPanel {
             System.out.println("MessageListener");
             if(focused == chatIndex) {
                 displayChat(focused);
+            }
+        });
+        this.contactData.getContact(chatIndex).setConnectionListener((open) -> {
+            System.out.println("ConnectionListener");
+            if(!open) {
+                messageTextField.setEditable(false);
             }
         });
     }
