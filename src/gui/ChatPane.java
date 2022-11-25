@@ -67,12 +67,12 @@ public class ChatPane extends JPanel {
         for(Message message : messages) {
             JLabel messageLabel = new JLabel(message.message);
             if(message.owned) {
-                messageLabel.setBackground(UIManager.getColor("accentColor"));
+                //messageLabel.setBackground(UIManager.getColor("TitlePane.background"));
                 messageLabel.setOpaque(true);
                 messageLabel.setVisible(true);
             }
             messagePanel.add(messageLabel);
-            messagePanel.add(Box.createVerticalStrut(3));
+            messagePanel.add(Box.createVerticalStrut(4));
             messagePanel.validate();
         }
         messagePanel.repaint();

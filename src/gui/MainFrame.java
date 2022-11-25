@@ -79,6 +79,7 @@ public class MainFrame extends JFrame {
                 }
             } catch(Exception ex) {}
         });
+
         menuBar.add(theme);
 
         //File menu
@@ -118,6 +119,8 @@ public class MainFrame extends JFrame {
         contactMenu.add(add);
         contactMenu.add(delete);
         menuBar.add(contactMenu);
+
+
         //TODO more menus
         setJMenuBar(menuBar);
     }
@@ -127,8 +130,7 @@ public class MainFrame extends JFrame {
             super("Rename");
             JMenuItem rename = new JMenuItem("Rename");
             rename.addActionListener(e -> {
-                //String name = JOptionPane.showInputDialog("Enter new name:");
-                String name = JOptionPane.showInputDialog(null, "Enter new name:", "Rename", JOptionPane.QUESTION_MESSAGE);
+                String name = JOptionPane.showInputDialog(MainFrame.this, "Enter new name:", "Rename Contact", JOptionPane.QUESTION_MESSAGE);
                 if(name != null) {
                     contactData.renameContact(contact, name);
                 }
@@ -137,8 +139,13 @@ public class MainFrame extends JFrame {
             delete.addActionListener(e -> {
                 contactData.deleteContact(contact);
             });
+            JMenuItem information = new JMenuItem("Information");
+            information.addActionListener(e -> {
+                JOptionPane.showMessageDialog(MainFrame.this, "Name:  " + contact.getName() + "\nIp:  " + contact.getIp(), "Contact Information", JOptionPane.INFORMATION_MESSAGE);
+            });
             add(rename);
             add(delete);
+            add(information);
         }
     }
 }
