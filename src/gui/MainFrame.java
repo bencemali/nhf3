@@ -1,7 +1,7 @@
 package gui;
 
-import gui.theme.DarkTheme;
-import gui.theme.LightTheme;
+import gui.theme.dark.DarkTheme;
+import gui.theme.light.LightTheme;
 import network.Contact;
 import network.ContactData;
 

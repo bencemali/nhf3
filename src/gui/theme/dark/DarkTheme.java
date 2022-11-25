@@ -1,8 +1,8 @@
-package gui.theme;
+package gui.theme.dark;
 
-import com.formdev.flatlaf.FlatDarculaLaf;
+import com.formdev.flatlaf.FlatDarkLaf;
 
-public class DarkTheme extends FlatDarculaLaf {
+public class DarkTheme extends FlatDarkLaf {
     public static boolean setup() {
         return setup(new DarkTheme());
     }
