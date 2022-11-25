@@ -1,9 +1,7 @@
 package gui;
 
-import com.formdev.flatlaf.FlatDarkLaf;
-import com.formdev.flatlaf.FlatLightLaf;
-import com.formdev.flatlaf.ui.FlatTitlePane;
-import gui.theme.Theme;
+import gui.theme.DarkTheme;
+import gui.theme.LightTheme;
 import network.Contact;
 import network.ContactData;
 
@@ -27,7 +25,7 @@ public class MainFrame extends JFrame {
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setSize(new Dimension(1000, 600));
         try {
-            UIManager.setLookAndFeel(new Theme());
+            UIManager.setLookAndFeel(new DarkTheme());
             UIManager.put("TitlePane.unifiedBackground", false);
         } catch(Exception e) {}
         initComponents();
@@ -60,6 +58,28 @@ public class MainFrame extends JFrame {
 
     private void initMenuBar() {
         menuBar = new JMenuBar();
+        JButton theme = new JButton("Light");
+        theme.setBackground(Color.decode("#c9c4c1"));
+        theme.setForeground(Color.decode("#0e0d0d"));
+        theme.setBorderPainted(false);
+        theme.addActionListener(e -> {
+            try {
+                if (UIManager.getLookAndFeel().getName().equals("DarkTheme")) {
+                    UIManager.setLookAndFeel(new LightTheme());
+                    theme.setText("Dark");
+                    theme.setBackground(Color.decode("#1f1d1d"));
+                    theme.setForeground(Color.WHITE);
+                    SwingUtilities.updateComponentTreeUI(this);
+                } else {
+                    UIManager.setLookAndFeel(new DarkTheme());
+                    theme.setText("Light");
+                    theme.setBackground(Color.decode("#c9c4c1"));
+                    theme.setForeground(Color.decode("#0e0d0d"));
+                    SwingUtilities.updateComponentTreeUI(this);
+                }
+            } catch(Exception ex) {}
+        });
+        menuBar.add(theme);
 
         //File menu
         JMenu fileMenu = new JMenu("File");

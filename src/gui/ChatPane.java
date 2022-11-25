@@ -33,7 +33,7 @@ public class ChatPane extends JPanel {
         messageTextField.addActionListener(e -> {
             if(!messageTextField.getText().equals("")) {
                 this.contactData.getContact(focused).sendMessage(messageTextField.getText());
-                //messageTextField.setText("");
+                messageTextField.setText("");
             }
         });
         sendPanel.add(messageTextField);
@@ -41,7 +41,7 @@ public class ChatPane extends JPanel {
         sendButton.addActionListener(e -> {
             if(!messageTextField.getText().equals("")) {
                 this.contactData.getContact(focused).sendMessage(messageTextField.getText());
-                //messageTextField.setText("");
+                messageTextField.setText("");
             }
         });
         sendPanel.add(sendButton);
@@ -77,6 +77,8 @@ public class ChatPane extends JPanel {
         }
         messagePanel.repaint();
         messageScrollPane.validate();
+        JScrollBar verticalBar = messageScrollPane.getVerticalScrollBar();
+        verticalBar.setValue(verticalBar.getMaximum());
         messageScrollPane.repaint();
         this.contactData.getContact(focused).setMessageListener(() -> {
             System.out.println("MessageListener");
