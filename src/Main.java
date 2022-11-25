@@ -1,3 +1,4 @@
+import com.formdev.flatlaf.FlatLightLaf;
 import gui.*;
 import network.*;
 
@@ -13,6 +14,7 @@ public class Main {
     private static MainFrame frame;
 
     public static void main(String[] args) {
+        FlatLightLaf.setup();
         contactData = loadData();
         server = new Server(contactData);
         server.start();

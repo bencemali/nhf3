@@ -31,18 +31,20 @@ public class ContactPane extends JPanel {
         JScrollPane scrollPane = new JScrollPane(table);
         add(scrollPane, BorderLayout.CENTER);
 
-        JLabel nameLabel = new JLabel("Name: ");
+        JLabel nameLabel = new JLabel("Name");
         JTextField nameField = new JTextField(20);
-        JLabel ipLabel = new JLabel("Ip: ");
+        JLabel ipLabel = new JLabel("Ip");
         JTextField ipField = new JTextField(20);
         JPanel addPanel = new JPanel(new GridBagLayout());
         JButton addButton = new JButton("Add Connection");
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                contactData.addContact(nameField.getText(), ipField.getText());
-                nameField.setText("");
-                ipField.setText("");
+                if(!nameField.getText().equals("") && !ipField.getText().equals("")) {
+                    contactData.addContact(nameField.getText(), ipField.getText());
+                    nameField.setText("");
+                    ipField.setText("");
+                }
             }
         });
         GridBagConstraints gbc = new GridBagConstraints();

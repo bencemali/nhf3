@@ -1,5 +1,9 @@
 package gui;
 
+import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatLightLaf;
+import com.formdev.flatlaf.ui.FlatTitlePane;
+import gui.theme.Theme;
 import network.Contact;
 import network.ContactData;
 
@@ -22,8 +26,12 @@ public class MainFrame extends JFrame {
         contactData = data;
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setSize(new Dimension(1000, 600));
-
+        try {
+            UIManager.setLookAndFeel(new Theme());
+            UIManager.put("TitlePane.unifiedBackground", false);
+        } catch(Exception e) {}
         initComponents();
+        setLocationRelativeTo(null);
         setVisible(true);
     }
 
@@ -96,9 +104,11 @@ public class MainFrame extends JFrame {
 
     class ContactPopup extends JPopupMenu {
         public ContactPopup(Contact contact) {
+            super("Rename");
             JMenuItem rename = new JMenuItem("Rename");
             rename.addActionListener(e -> {
-                String name = JOptionPane.showInputDialog("Enter new name:");
+                //String name = JOptionPane.showInputDialog("Enter new name:");
+                String name = JOptionPane.showInputDialog(null, "Enter new name:", "Rename", JOptionPane.QUESTION_MESSAGE);
                 if(name != null) {
                     contactData.renameContact(contact, name);
                 }
