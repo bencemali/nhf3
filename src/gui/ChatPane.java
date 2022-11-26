@@ -1,5 +1,6 @@
 package gui;
 
+import network.Contact;
 import network.ContactData;
 import network.Message;
 
@@ -9,24 +10,45 @@ import java.awt.*;
 import java.util.List;
 
 /**
- * TODO javadoc
+ * The panel listing the previous messages of the selected chat, and holding a text field to send new messages
  */
 public class ChatPane extends JPanel {
-    private ContactData contactData;
-    private int focused;
-    private JScrollPane messageScrollPane;
-    private JPanel messagePanel;
-    private JTextField messageTextField;
-    private JButton sendButton;
-    private JPanel sendPanel;
+    /**
+     * The data object storing the contacts
+     */
+    private final ContactData contactData;
 
+    /**
+     * The index of the currently focused/displayed contact
+     */
+    private int focused;
+
+    /**
+     * The scrollpane holding the messagePanel
+     */
+    private final JScrollPane messageScrollPane;
+
+    /**
+     * The panel holding the listed previous messages
+     */
+    private final JPanel messagePanel;
+    /**
+     * TextField to write new message
+     */
+    private final JTextField messageTextField;
+
+    /**
+     * Constructor
+     *
+     * @param contactData the data object storing the contacts
+     */
     public ChatPane(ContactData contactData) {
         System.out.println("ChatPane(ContactData)");
         this.contactData = contactData;
         focused = -1;
         messagePanel = new JPanel();
         messagePanel.setLayout(new BoxLayout(messagePanel, BoxLayout.PAGE_AXIS));
-        sendPanel = new JPanel();
+        JPanel sendPanel = new JPanel();
         sendPanel.setLayout(new BoxLayout(sendPanel, BoxLayout.LINE_AXIS));
         messageTextField = new JTextField();
         messageTextField.setEditable(false);
@@ -37,7 +59,7 @@ public class ChatPane extends JPanel {
             }
         });
         sendPanel.add(messageTextField);
-        sendButton = new JButton("Send");
+        JButton sendButton = new JButton("Send");
         sendButton.addActionListener(e -> {
             if(!messageTextField.getText().equals("")) {
                 this.contactData.getContact(focused).sendMessage(messageTextField.getText());
@@ -51,46 +73,51 @@ public class ChatPane extends JPanel {
         add(sendPanel, BorderLayout.SOUTH);
     }
 
+    /**
+     * Focuses a chat, displaying the previous messages
+     *
+     * @param chatIndex the index of the chat to display
+     */
     public void displayChat(int chatIndex) {
         System.out.println("displayChat()");
+        if(focused != -1) {
+            Contact c = this.contactData.getContact(focused);
+            if(c != null) {
+                c.setConnectionListener(null);
+            }
+        }
         focused = chatIndex;
         messagePanel.removeAll();
         messagePanel.validate();
-        messageTextField.setEditable(contactData.getContact(focused).isConnected());
-        List<Message> messages = contactData.getContact(focused).getMessages();
-        System.out.println("List of messages: ");
-        for(Message m : messages) {
-            System.out.println(m.message);
+        Contact focusedContact = contactData.getContact(focused);
+        if(focusedContact != null) {
+            messageTextField.setEditable(focusedContact.isConnected());
+            List<Message> messages = focusedContact.getMessages();
+            focusedContact.connect();
+            Border border = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1);
+            for (Message message : messages) {
+                JLabel messageLabel = new JLabel(message.message);
+                if (message.owned) {
+                    messageLabel.setOpaque(true);
+                    messageLabel.setVisible(true);
+                }
+                messagePanel.add(messageLabel);
+                messagePanel.add(Box.createVerticalStrut(4));
+                messagePanel.validate();
+            }
+            messagePanel.repaint();
+            messageScrollPane.validate();
+            JScrollBar verticalBar = messageScrollPane.getVerticalScrollBar();
+            verticalBar.setValue(verticalBar.getMaximum());
+            messageScrollPane.repaint();
+            focusedContact.setMessageListener(() -> {
+                if (focused == chatIndex) {
+                    displayChat(focused);
+                }
+            });
+            focusedContact.setConnectionListener((up) -> {
+                messageTextField.setEditable(up);
+            });
         }
-        contactData.getContact(focused).connect();
-        Border border = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1);
-        for(Message message : messages) {
-            JLabel messageLabel = new JLabel(message.message);
-            if(message.owned) {
-                //messageLabel.setBackground(UIManager.getColor("TitlePane.background"));
-                messageLabel.setOpaque(true);
-                messageLabel.setVisible(true);
-            }
-            messagePanel.add(messageLabel);
-            messagePanel.add(Box.createVerticalStrut(4));
-            messagePanel.validate();
-        }
-        messagePanel.repaint();
-        messageScrollPane.validate();
-        JScrollBar verticalBar = messageScrollPane.getVerticalScrollBar();
-        verticalBar.setValue(verticalBar.getMaximum());
-        messageScrollPane.repaint();
-        this.contactData.getContact(focused).setMessageListener(() -> {
-            System.out.println("MessageListener");
-            if(focused == chatIndex) {
-                displayChat(focused);
-            }
-        });
-        this.contactData.getContact(chatIndex).setConnectionListener((open) -> {
-            System.out.println("ConnectionListener");
-            if(!open) {
-                messageTextField.setEditable(false);
-            }
-        });
     }
 }

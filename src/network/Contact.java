@@ -17,6 +17,11 @@ public class Contact implements Serializable {
         this.ipAddress = ipAddress;
         messages = new ArrayList<>();
         connection = new Connection(this);
+        connection.setListener((up) -> {
+            if(connectionListener != null) {
+                connectionListener.connectionChanged(up);
+            }
+        });
         messageListener = null;
         connectionListener = null;
     }
@@ -26,6 +31,11 @@ public class Contact implements Serializable {
         this.ipAddress = ipAddress;
         messages = new ArrayList<>();
         this.connection = connection;
+        connection.setListener((up) -> {
+            if(connectionListener != null) {
+                connectionListener.connectionChanged(up);
+            }
+        });
         messageListener = null;
         connectionListener = null;
     }
@@ -34,6 +44,15 @@ public class Contact implements Serializable {
         System.out.println("Contact::connect");
         if(connection == null) {
             connection = new Connection(this);
+            connection.setListener((up) -> {
+                connectionListener.connectionChanged(up);
+            });
+        } else if(!connection.isOpen()) {
+            connection.dispose();
+            connection = new Connection(this);
+            connection.setListener((up) -> {
+                connectionListener.connectionChanged(up);
+            });
         }
     }
 
@@ -42,13 +61,18 @@ public class Contact implements Serializable {
         if(connection == null) {
             return false;
         } else {
-            return connection.isConnected();
+            return connection.isOpen();
         }
     }
 
     public void setConnection(Connection connection) {
         System.out.println("Contact::setConnection");
         this.connection = connection;
+        connection.setListener((up) -> {
+            if(connectionListener != null) {
+                connectionListener.connectionChanged(up);
+            }
+        });
     }
 
     public void setName(String name) {
@@ -83,7 +107,9 @@ public class Contact implements Serializable {
                 messageListener.newMessage();
             }
         } else {
-            connectionListener.connectionChanged(false);
+            if(connectionListener != null) {
+                connectionListener.connectionChanged(false);
+            }
         }
     }
 
@@ -95,5 +121,10 @@ public class Contact implements Serializable {
     public void setConnectionListener(ConnectionListener listener) {
         System.out.println("Contact::setConnectionListener");
         connectionListener = listener;
+        connection.setListener((up) -> {
+            if(connectionListener != null) {
+                connectionListener.connectionChanged(up);
+            }
+        });
     }
 }

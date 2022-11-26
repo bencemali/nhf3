@@ -11,14 +11,30 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 /**
- * TODO javadoc
+ * The main frame/window
  */
 public class MainFrame extends JFrame {
-    private ContactData contactData;
-    private JMenuBar menuBar;
+    /**
+     * The data object storing the contacts
+     */
+    private final ContactData contactData;
+
+    /**
+     * The panel listing the contacts
+     */
     private ContactPane contactPane;
+
+    /**
+     * The chat panel showing the selected chat
+     */
     private ChatPane chatPane;
 
+    /**
+     * Constructor
+     * Sets parameters and look'n'feel
+     *
+     * @param data the data object storing the contacts
+     */
     public MainFrame(ContactData data) {
         super("Chat application");
         contactData = data;
@@ -33,6 +49,9 @@ public class MainFrame extends JFrame {
         setVisible(true);
     }
 
+    /**
+     * Initializes the components of the frame
+     */
     private void initComponents() {
         initMenuBar();
         JTable table = new JTable(contactData);
@@ -56,8 +75,11 @@ public class MainFrame extends JFrame {
         add(chatPane, BorderLayout.CENTER);
     }
 
+    /**
+     * Initializes the menu bar
+     */
     private void initMenuBar() {
-        menuBar = new JMenuBar();
+        JMenuBar menuBar = new JMenuBar();
         JButton theme = new JButton("Light");
         theme.setBackground(Color.decode("#c9c4c1"));
         theme.setForeground(Color.decode("#0e0d0d"));
@@ -125,7 +147,15 @@ public class MainFrame extends JFrame {
         setJMenuBar(menuBar);
     }
 
+    /**
+     * Popup for options when right-clicking on a contact
+     */
     class ContactPopup extends JPopupMenu {
+        /**
+         * Constructor
+         *
+         * @param contact the contact that's been clicked on
+         */
         public ContactPopup(Contact contact) {
             super("Rename");
             JMenuItem rename = new JMenuItem("Rename");

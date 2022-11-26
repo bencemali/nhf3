@@ -12,11 +12,11 @@ public class ContactData extends AbstractTableModel {
 
     public ContactData(List<Contact> c) {
         contacts = c;
-        //TODO ctor
     }
 
     @Override
-    public int getRowCount() { return contacts.size(); }
+    public int getRowCount() {
+        return contacts.size(); }
 
     @Override
     public int getColumnCount() { return 1; }
@@ -76,6 +76,7 @@ public class ContactData extends AbstractTableModel {
     }
 
     public Contact getContact(int rowIndex) {
+        if(rowIndex >= contacts.size() || contacts.size() == 0 || rowIndex < 0) return null;
         return contacts.get(rowIndex);
     }
 

@@ -10,12 +10,25 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 
 /**
- * TODO javadoc
+ * The panel displaying the list of contacts
  */
 public class ContactPane extends JPanel {
+    /**
+     * The table model storing the contacts
+     */
     private final ContactData contactData;
+
+    /**
+     * The table formed from the contactData table model
+     */
     private final JTable table;
 
+    /**
+     * Constructor
+     *
+     * @param data the table model storing the contacts
+     * @param contactTable the table formed from the model
+     */
     public ContactPane(ContactData data, JTable contactTable) {
         contactData = data;
 
@@ -71,6 +84,12 @@ public class ContactPane extends JPanel {
         add(addPanel, BorderLayout.SOUTH);
     }
 
+    /**
+     * Method to get the index of the contact that was clicked on
+     *
+     * @param e the mouse click event
+     * @return the index of the contact that was clicked on
+     */
     public int getIndexForClick(MouseEvent e) {
         System.out.println("getIndexForClick()");
         return table.rowAtPoint(e.getPoint());
