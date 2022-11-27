@@ -82,8 +82,8 @@ public class MainFrame extends JFrame {
     private void initMenuBar() {
         JMenuBar menuBar = new JMenuBar();
         JButton theme = new JButton("Light");
-        theme.setBackground(Color.decode("#c9c4c1"));
-        theme.setForeground(Color.decode("#0e0d0d"));
+        theme.setBackground(Color.decode("#8a8181"));
+        theme.setForeground(Color.BLACK);
         theme.setBorderPainted(false);
         theme.addActionListener(e -> {
             try {
@@ -96,7 +96,7 @@ public class MainFrame extends JFrame {
                 } else {
                     UIManager.setLookAndFeel(new DarkTheme());
                     theme.setText("Light");
-                    theme.setBackground(Color.decode("#c9c4c1"));
+                    theme.setBackground(Color.decode("#8a8181"));
                     theme.setForeground(Color.decode("#0e0d0d"));
                     SwingUtilities.updateComponentTreeUI(this);
                 }

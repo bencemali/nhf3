@@ -54,7 +54,7 @@ public class ContactPane extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(!nameField.getText().equals("") && !ipField.getText().equals("")) {
-                    contactData.addContact(nameField.getText(), ipField.getText());
+                    contactData.addContact(nameField.getText().trim(), ipField.getText().trim());
                     nameField.setText("");
                     ipField.setText("");
                 }
