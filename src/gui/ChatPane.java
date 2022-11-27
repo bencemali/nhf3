@@ -6,6 +6,8 @@ import network.Message;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.List;
 
@@ -43,11 +45,13 @@ public class ChatPane extends JPanel {
      * @param contactData the data object storing the contacts
      */
     public ChatPane(ContactData contactData) {
-        System.out.println("ChatPane(ContactData)");
         this.contactData = contactData;
+        this.contactData.setDisposeListener((idx) -> {
+            if(idx == focused) displayChat(-1);
+        });
         focused = -1;
         messagePanel = new JPanel();
-        messagePanel.setLayout(new BoxLayout(messagePanel, BoxLayout.PAGE_AXIS));
+        messagePanel.setLayout(new GridBagLayout());
         JPanel sendPanel = new JPanel();
         sendPanel.setLayout(new BoxLayout(sendPanel, BoxLayout.LINE_AXIS));
         messageTextField = new JTextField();
@@ -79,7 +83,6 @@ public class ChatPane extends JPanel {
      * @param chatIndex the index of the chat to display
      */
     public void displayChat(int chatIndex) {
-        System.out.println("displayChat()");
         if(focused != -1) {
             Contact c = this.contactData.getContact(focused);
             if(c != null) {
@@ -94,15 +97,31 @@ public class ChatPane extends JPanel {
             messageTextField.setEditable(focusedContact.isConnected());
             List<Message> messages = focusedContact.getMessages();
             focusedContact.connect();
-            Border border = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1);
+            Border line = BorderFactory.createLineBorder(Color.DARK_GRAY, 1);
+            Border margin1 = new EmptyBorder(6,12,6,12);
+            Border margin2 = new EmptyBorder(4, 4, 4, 4);
+            CompoundBorder inner = new CompoundBorder(line, margin1);
+            CompoundBorder border = new CompoundBorder(margin2, inner);
+            GridBagConstraints gbc = new GridBagConstraints();
+            int i = 0;
+            double num = messages.size();
+            double ratio = 1/num;
             for (Message message : messages) {
+                gbc.weightx = 0.5;
+                //gbc.weighty = 0.1;
                 JLabel messageLabel = new JLabel(message.message);
+                messageLabel.setBorder(border);
                 if (message.owned) {
                     messageLabel.setOpaque(true);
                     messageLabel.setVisible(true);
+                    gbc.gridx = 1;
+                    gbc.anchor = GridBagConstraints.NORTHEAST;
+                } else {
+                    gbc.gridx = 0;
+                    gbc.anchor = GridBagConstraints.NORTHWEST;
                 }
-                messagePanel.add(messageLabel);
-                messagePanel.add(Box.createVerticalStrut(4));
+                gbc.gridy = i++;
+                messagePanel.add(messageLabel, gbc);
                 messagePanel.validate();
             }
             messagePanel.repaint();

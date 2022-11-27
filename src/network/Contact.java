@@ -41,7 +41,6 @@ public class Contact implements Serializable {
     }
 
     public void connect() {
-        System.out.println("Contact::connect");
         if(connection == null) {
             connection = new Connection(this);
             connection.setListener((up) -> {
@@ -57,7 +56,6 @@ public class Contact implements Serializable {
     }
 
     public boolean isConnected() {
-        System.out.println("Contact::isConnected");
         if(connection == null) {
             return false;
         } else {
@@ -66,7 +64,6 @@ public class Contact implements Serializable {
     }
 
     public void setConnection(Connection connection) {
-        System.out.println("Contact::setConnection");
         this.connection = connection;
         connection.setListener((up) -> {
             if(connectionListener != null) {
@@ -92,7 +89,6 @@ public class Contact implements Serializable {
     public List<Message> getMessages() { return messages; }
 
     public void receiveMessage(String message) {
-        System.out.println("Contact::receiveMessage");
         messages.add(new Message(message, false));
         if(messageListener != null) {
             messageListener.newMessage();
@@ -100,7 +96,6 @@ public class Contact implements Serializable {
     }
 
     public void sendMessage(String message) {
-        System.out.println("Contact::sendMessage");
         if(connection.send(message)) {
             messages.add(new Message(message, true));
             if(messageListener != null) {
@@ -114,12 +109,10 @@ public class Contact implements Serializable {
     }
 
     public void setMessageListener(MessageListener listener) {
-        System.out.println("Contact::setMessageListener");
         messageListener = listener;
     }
 
     public void setConnectionListener(ConnectionListener listener) {
-        System.out.println("Contact::setConnectionListener");
         connectionListener = listener;
         connection.setListener((up) -> {
             if(connectionListener != null) {

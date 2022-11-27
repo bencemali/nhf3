@@ -9,5 +9,5 @@ public interface ConnectionListener {
      *
      * @param up whether the connection is up
      */
-    public void connectionChanged(boolean up);
+    void connectionChanged(boolean up);
 }

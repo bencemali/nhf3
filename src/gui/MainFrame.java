@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 
 /**
  * The main frame/window
@@ -101,8 +102,9 @@ public class MainFrame extends JFrame {
                 }
             } catch(Exception ex) {}
         });
-
         menuBar.add(theme);
+
+        menuBar.add(Box.createHorizontalStrut(8));
 
         //File menu
         JMenu fileMenu = new JMenu("File");
@@ -117,6 +119,12 @@ public class MainFrame extends JFrame {
         JMenuItem saveOut = new JMenuItem("Save to .dat");
         saveOut.addActionListener(e -> {
             //TODO open dialog panel
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setCurrentDirectory(new File("."));
+            int returnVal = fileChooser.showDialog(this, "Save");
+            if(returnVal == JFileChooser.APPROVE_OPTION) {
+                System.out.println(fileChooser.getSelectedFile().getAbsolutePath());
+            }
         });
         JMenuItem loadIn = new JMenuItem("Load from .dat");
         loadIn.addActionListener(e -> {
@@ -127,21 +135,6 @@ public class MainFrame extends JFrame {
         fileMenu.add(saveOut);
         fileMenu.add(loadIn);
         menuBar.add(fileMenu);
-
-        //Contacts menu
-        JMenu contactMenu = new JMenu("Contacts");
-        JMenuItem add = new JMenuItem("Add");
-        add.addActionListener(e -> {
-            //TODO open dialog panel
-        });
-        JMenuItem delete = new JMenuItem("Delete");
-        delete.addActionListener(e -> {
-            //TODO open dialog panel
-        });
-        contactMenu.add(add);
-        contactMenu.add(delete);
-        menuBar.add(contactMenu);
-
 
         //TODO more menus
         setJMenuBar(menuBar);

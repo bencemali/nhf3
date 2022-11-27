@@ -3,6 +3,7 @@ package network;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -70,7 +71,7 @@ public class Connection {
                 output = null;
                 input = null;
             }
-        } catch (Exception e) {}
+        } catch(Exception e) {}
     }
 
     /**
@@ -128,7 +129,6 @@ public class Connection {
      * @return whether it could be sent
      */
     public boolean send(String message) {
-        System.out.println("Connection::send");
         if(isOpen()) {
             output.println(message);
             output.flush();
@@ -143,7 +143,7 @@ public class Connection {
     public void dispose() {
         open = false;
         if(listener != null) {
-            listener.connectionChanged(open);
+            listener.connectionChanged(false);
         }
         if(socket != null) {
             try {
@@ -200,7 +200,6 @@ public class Connection {
                     if(message == null) {
                         running.set(false);
                     }
-                    System.out.println(message);
                 } catch(IOException e) {}
                 if(message != null) {
                     synchronized(contact) {

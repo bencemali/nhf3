@@ -91,7 +91,6 @@ public class ContactPane extends JPanel {
      * @return the index of the contact that was clicked on
      */
     public int getIndexForClick(MouseEvent e) {
-        System.out.println("getIndexForClick()");
         return table.rowAtPoint(e.getPoint());
     }
 }

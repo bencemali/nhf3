@@ -9,6 +9,7 @@ import java.util.List;
  */
 public class ContactData extends AbstractTableModel {
     public final List<Contact> contacts;
+    private DisposeListener disposeListener;
 
     public ContactData(List<Contact> c) {
         contacts = c;
@@ -41,6 +42,12 @@ public class ContactData extends AbstractTableModel {
     }
 
     public void addContact(String name, String ip) {
+        Iterator<Contact> it = contacts.iterator();
+        while(it.hasNext()) {
+            Contact c = it.next();
+            if(c.getName().equals(name)) return;
+            if(c.getIp().equals(ip)) return;
+        }
         contacts.add(new Contact(name, ip));
         fireTableDataChanged();
     }
@@ -51,13 +58,14 @@ public class ContactData extends AbstractTableModel {
     }
 
     public void deleteContact(Contact contact) {
-        Iterator<Contact> it = contacts.iterator();
-        while(it.hasNext()) {
-            Contact c = it.next();
-            if(c == contact) {
-                c.dispose();
-                it.remove();
+        for(int i = 0; i < contacts.size(); ++i) {
+            if(contacts.get(i) == contact) {
+                contacts.get(i).dispose();
+                contacts.remove(i);
                 fireTableDataChanged();
+                if(disposeListener != null) {
+                    disposeListener.disposed(i);
+                }
                 break;
             }
         }
@@ -96,5 +104,9 @@ public class ContactData extends AbstractTableModel {
             }
         }
         return false;
+    }
+
+    public void setDisposeListener(DisposeListener listener) {
+        disposeListener = listener;
     }
 }
