@@ -82,7 +82,7 @@ public class ChatPane extends JPanel {
      *
      * @param chatIndex the index of the chat to display
      */
-    public void displayChat(int chatIndex) {
+    synchronized public void displayChat(int chatIndex) {
         if(focused != -1) {
             Contact c = this.contactData.getContact(focused);
             if(c != null) {

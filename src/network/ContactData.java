@@ -26,14 +26,14 @@ public class ContactData extends AbstractTableModel {
     }
 
     @Override
-    public int getRowCount() {
+    synchronized public int getRowCount() {
         return contacts.size(); }
 
     @Override
-    public int getColumnCount() { return 1; }
+    synchronized public int getColumnCount() { return 1; }
 
     @Override
-    public Object getValueAt(int rowIndex, int columnIndex) {
+    synchronized public Object getValueAt(int rowIndex, int columnIndex) {
         if(rowIndex >= contacts.size() || columnIndex != 0) {
             return null;
         } else {
@@ -42,16 +42,16 @@ public class ContactData extends AbstractTableModel {
     }
 
     @Override
-    public boolean isCellEditable(int rowIndex, int columnIndex) {
+    synchronized public boolean isCellEditable(int rowIndex, int columnIndex) {
         return false;
     }
 
     @Override
-    public Class<?> getColumnClass(int columnIndex) {
+    synchronized public Class<?> getColumnClass(int columnIndex) {
         return String.class;
     }
 
-    public void addContact(String name, String ip) {
+    synchronized public void addContact(String name, String ip) {
         Iterator<Contact> it = contacts.iterator();
         while(it.hasNext()) {
             Contact c = it.next();
@@ -62,12 +62,12 @@ public class ContactData extends AbstractTableModel {
         fireTableDataChanged();
     }
 
-    public void addContact(Contact contact) {
+    synchronized public void addContact(Contact contact) {
         contacts.add(contact);
         fireTableDataChanged();
     }
 
-    public void deleteContact(Contact contact) {
+    synchronized public void deleteContact(Contact contact) {
         for(int i = 0; i < contacts.size(); ++i) {
             if(contacts.get(i) == contact) {
                 contacts.get(i).dispose();
@@ -81,7 +81,7 @@ public class ContactData extends AbstractTableModel {
         }
     }
 
-    public void renameContact(Contact contact, String name) {
+    synchronized public void renameContact(Contact contact, String name) {
         Iterator<Contact> it = contacts.iterator();
         while(it.hasNext()) {
             Contact c = it.next();
@@ -93,12 +93,12 @@ public class ContactData extends AbstractTableModel {
         }
     }
 
-    public Contact getContact(int rowIndex) {
+    synchronized public Contact getContact(int rowIndex) {
         if(rowIndex >= contacts.size() || contacts.size() == 0 || rowIndex < 0) return null;
         return contacts.get(rowIndex);
     }
 
-    public Contact getContact(String ipAddress) {
+    synchronized public Contact getContact(String ipAddress) {
         for(Contact contact : contacts) {
             if(contact.getIp().equals(ipAddress)) {
                 return contact;
@@ -107,7 +107,7 @@ public class ContactData extends AbstractTableModel {
         return null;
     }
 
-    public boolean haveContact(String ipAddress) {
+    synchronized public boolean haveContact(String ipAddress) {
         for(Contact contact : contacts) {
             if(contact.getIp().equals(ipAddress)) {
                 return true;
@@ -116,11 +116,11 @@ public class ContactData extends AbstractTableModel {
         return false;
     }
 
-    public void setDisposeListener(DisposeListener listener) {
+    synchronized public void setDisposeListener(DisposeListener listener) {
         disposeListener = listener;
     }
 
-    public void saveOut(File file) {
+    synchronized public void saveOut(File file) {
         if(file != null) {
             try {
                 ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file));
@@ -130,7 +130,7 @@ public class ContactData extends AbstractTableModel {
         }
     }
 
-    public void loadIn(File file) {
+    synchronized public void loadIn(File file) {
         if(file != null) {
             List<Contact> list = null;
             try {
@@ -158,7 +158,7 @@ public class ContactData extends AbstractTableModel {
         }
     }
 
-    public void saveToXml(File file) {
+    synchronized public void saveToXml(File file) {
         if (file != null) {
             synchronized(contacts) {
                 Element contactsElement = new Element("contacts");
@@ -185,7 +185,7 @@ public class ContactData extends AbstractTableModel {
         }
     }
 
-    public void loadFromXml(File file) {
+    synchronized public void loadFromXml(File file) {
         if(file != null) {
             SAXBuilder saxBuilder = new SAXBuilder();
             Document document = null;

@@ -101,7 +101,7 @@ public class Connection {
      *
      * @param contact the new contact to belong to
      */
-    public void setContact(Contact contact) {
+    synchronized public void setContact(Contact contact) {
         if(inputHandler != null) {
             inputHandler.halt();
         }
@@ -117,7 +117,7 @@ public class Connection {
      *
      * @return the connection is open
      */
-    public boolean isOpen() {
+    synchronized public boolean isOpen() {
         if(socket == null) return false;
         return open && socket.isConnected();
     }
@@ -128,7 +128,7 @@ public class Connection {
      * @param message message to be sent
      * @return whether it could be sent
      */
-    public boolean send(String message) {
+    synchronized public boolean send(String message) {
         if(isOpen()) {
             output.println(message);
             output.flush();
@@ -140,7 +140,7 @@ public class Connection {
     /**
      * Disposes of the connection and input handler thread
      */
-    public void dispose() {
+    synchronized public void dispose() {
         open = false;
         if(listener != null) {
             listener.connectionChanged(false);
@@ -163,7 +163,7 @@ public class Connection {
      *
      * @param listener listener to be set to
      */
-    public void setListener(ConnectionListener listener) {
+    synchronized public void setListener(ConnectionListener listener) {
         this.listener = listener;
     }
 
@@ -196,7 +196,9 @@ public class Connection {
             if(input == null) return;
             while(running.get()) {
                 try {
-                    message = input.readLine();
+                    synchronized(input) {
+                        message = input.readLine();
+                    }
                     if(message == null) {
                         running.set(false);
                     }
@@ -216,13 +218,13 @@ public class Connection {
         /**
          * Stops the thread's execution
          */
-        public void halt() { running.set(false); }
+        synchronized public void halt() { running.set(false); }
 
         /**
          * Returns whether the thread is running
          *
          * @return the thread's running state
          */
-        public boolean isRunning() { return running.get(); }
+        synchronized public boolean isRunning() { return running.get(); }
     }
 }

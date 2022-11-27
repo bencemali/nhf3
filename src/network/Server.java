@@ -20,10 +20,9 @@ public class Server extends Thread {
     }
 
     @Override
-    public void run() {
-        //TODO wait for connections and add to ContactData
+    synchronized public void run() {
         Socket socket = null;
-        while(true) {
+        while(serverSocket != null) {
             try {
                 socket = serverSocket.accept();
             } catch(IOException e) {}
@@ -43,7 +42,7 @@ public class Server extends Thread {
         }
     }
 
-    public void closeAllSockets() {
+    synchronized public void closeAllSockets() {
         if(sockets != null) {
             for (Socket socket : sockets) {
                 try {

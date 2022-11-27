@@ -40,7 +40,7 @@ public class Contact implements Serializable {
         connectionListener = null;
     }
 
-    public void connect() {
+    synchronized public void connect() {
         if(connection == null) {
             connection = new Connection(this);
             connection.setListener((up) -> {
@@ -55,7 +55,7 @@ public class Contact implements Serializable {
         }
     }
 
-    public boolean isConnected() {
+    synchronized public boolean isConnected() {
         if(connection == null) {
             return false;
         } else {
@@ -63,7 +63,7 @@ public class Contact implements Serializable {
         }
     }
 
-    public void setConnection(Connection connection) {
+    synchronized public void setConnection(Connection connection) {
         this.connection = connection;
         connection.setListener((up) -> {
             if(connectionListener != null) {
@@ -72,34 +72,34 @@ public class Contact implements Serializable {
         });
     }
 
-    public void setName(String name) {
+    synchronized public void setName(String name) {
         this.name = name;
     }
 
-    public void dispose() {
+    synchronized public void dispose() {
         if(connection != null) {
             connection.dispose();
         }
     }
 
-    public String getName() { return name; }
+    synchronized public String getName() { return name; }
 
-    public String getIp() { return ipAddress; }
+    synchronized public String getIp() { return ipAddress; }
 
-    public List<Message> getMessages() { return messages; }
+    synchronized public List<Message> getMessages() { return messages; }
 
-    public void addMessage(Message message) {
+    synchronized public void addMessage(Message message) {
         messages.add(message);
     }
 
-    public void receiveMessage(String message) {
+    synchronized public void receiveMessage(String message) {
         messages.add(new Message(message, false));
         if(messageListener != null) {
             messageListener.newMessage();
         }
     }
 
-    public void sendMessage(String message) {
+    synchronized public void sendMessage(String message) {
         if(connection.send(message)) {
             messages.add(new Message(message, true));
             if(messageListener != null) {
@@ -112,16 +112,18 @@ public class Contact implements Serializable {
         }
     }
 
-    public void setMessageListener(MessageListener listener) {
+    synchronized public void setMessageListener(MessageListener listener) {
         messageListener = listener;
     }
 
-    public void setConnectionListener(ConnectionListener listener) {
+    synchronized public void setConnectionListener(ConnectionListener listener) {
         connectionListener = listener;
-        connection.setListener((up) -> {
-            if(connectionListener != null) {
-                connectionListener.connectionChanged(up);
-            }
-        });
+        if(connection != null) {
+            connection.setListener((up) -> {
+                if (connectionListener != null) {
+                    connectionListener.connectionChanged(up);
+                }
+            });
+        }
     }
 }
