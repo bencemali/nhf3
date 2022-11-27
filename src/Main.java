@@ -6,11 +6,30 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.*;
 
+/**
+ * The starting point of the program
+ */
 public class Main {
+    /**
+     * The list of contacts
+     */
     private static ContactData contactData;
+
+    /**
+     * The server thread waiting for connections
+     */
     private static Server server;
+
+    /**
+     * The frame displaying all content
+     */
     private static MainFrame frame;
 
+    /**
+     * The program's main method and execution entry point
+     *
+     * @param args arguments
+     */
     public static void main(String[] args) {
         FlatLightLaf.setup();
         contactData = new ContactData();
@@ -21,7 +40,7 @@ public class Main {
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                server.closeAllSockets();
+                contactData.dispose();
                 contactData.saveOut(new File("contacts.dat"));
                 System.exit(0);
             }
