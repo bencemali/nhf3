@@ -3,11 +3,11 @@ package network;
 import java.io.Serializable;
 
 public class Message implements Serializable {
-    public String message;
+    public String string;
     public Boolean owned;
 
-    public Message(String message, Boolean owned) {
-        this.message = message;
+    public Message(String string, Boolean owned) {
+        this.string = string;
         this.owned = owned;
     }
 }

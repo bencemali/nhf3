@@ -109,7 +109,7 @@ public class ChatPane extends JPanel {
             for (Message message : messages) {
                 gbc.weightx = 0.5;
                 //gbc.weighty = 0.1;
-                JLabel messageLabel = new JLabel(message.message);
+                JLabel messageLabel = new JLabel(message.string);
                 messageLabel.setBorder(border);
                 if (message.owned) {
                     messageLabel.setOpaque(true);

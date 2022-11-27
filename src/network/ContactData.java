@@ -1,18 +1,28 @@
 package network;
 
+import javax.print.Doc;
 import javax.swing.table.AbstractTableModel;
+import java.io.*;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import org.jdom.Attribute;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.input.SAXBuilder;
+import org.jdom.output.Format;
+import org.jdom.output.XMLOutputter;
 
 /**
  * TODO javadoc
  */
 public class ContactData extends AbstractTableModel {
-    public final List<Contact> contacts;
+    private final List<Contact> contacts;
     private DisposeListener disposeListener;
 
-    public ContactData(List<Contact> c) {
-        contacts = c;
+    public ContactData() {
+        contacts = new ArrayList<>();
     }
 
     @Override
@@ -108,5 +118,93 @@ public class ContactData extends AbstractTableModel {
 
     public void setDisposeListener(DisposeListener listener) {
         disposeListener = listener;
+    }
+
+    public void saveOut(File file) {
+        if(file != null) {
+            try {
+                ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file));
+                oos.writeObject(contacts);
+                oos.close();
+            } catch(Exception e) {}
+        }
+    }
+
+    public void loadIn(File file) {
+        if(file != null) {
+            List<Contact> list = null;
+            try {
+                ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
+                list = (List<Contact>)ois.readObject();
+                ois.close();
+            } catch (Exception e) {}
+            if(list != null) {
+                for(Contact newContact : list) {
+                    boolean found = false;
+                    for(Contact oldContact : contacts) {
+                        if(newContact.getIp().equals(oldContact.getIp())) {
+                            found = true;
+                            break;
+                        } else if(newContact.getName().equals(oldContact.getName())) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if(!found) {
+                        contacts.add(newContact);
+                    }
+                }
+            }
+        }
+    }
+
+    public void saveToXml(File file) {
+        if (file != null) {
+            synchronized(contacts) {
+                Element contactsElement = new Element("contacts");
+                Document document = new Document(contactsElement);
+                for (Contact contact : contacts) {
+                    Element contactElement = new Element("contact");
+                    contactElement.setAttribute(new Attribute("name", contact.getName()));
+                    contactElement.setAttribute(new Attribute("ip", contact.getIp()));
+                    for (Message message : contact.getMessages()) {
+                        Element messageElement = new Element("message");
+                        messageElement.setAttribute(new Attribute("owned", message.owned.toString()));
+                        messageElement.setText(message.string);
+                        contactElement.addContent(messageElement);
+                    }
+                    document.getRootElement().addContent(contactElement);
+                }
+                XMLOutputter xmlOutputter = new XMLOutputter();
+                xmlOutputter.setFormat(Format.getPrettyFormat());
+                try {
+                    xmlOutputter.output(document, new FileOutputStream(file));
+                } catch (Exception e) {
+                }
+            }
+        }
+    }
+
+    public void loadFromXml(File file) {
+        if(file != null) {
+            SAXBuilder saxBuilder = new SAXBuilder();
+            Document document = null;
+            try {
+                document = saxBuilder.build(file);
+                Element contactsElement = document.getRootElement();
+                List<Element> contactList = contactsElement.getChildren();
+                for(Element contactElement : contactList) {
+                    String name = contactElement.getAttributeValue("name");
+                    String ip = contactElement.getAttributeValue("ip");
+                    Contact contact = new Contact(name, ip);
+                    List<Element> messageList = contactElement.getChildren();
+                    for(Element messageElement : messageList) {
+                        contact.addMessage(new Message(messageElement.getText(), Boolean.parseBoolean(messageElement.getAttributeValue("owned"))));
+                    }
+                    contacts.add(contact);
+                }
+            } catch(Exception e) {}
+            fireTableDataChanged();
+        }
     }
 }

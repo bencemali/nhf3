@@ -110,25 +110,40 @@ public class MainFrame extends JFrame {
         JMenu fileMenu = new JMenu("File");
         JMenuItem exportXml = new JMenuItem("Export to XML");
         exportXml.addActionListener(e -> {
-            //TODO open dialog panel
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setCurrentDirectory(new File("."));
+            int returnVal = fileChooser.showDialog(this, "Export");
+            if(returnVal == JFileChooser.APPROVE_OPTION) {
+                contactData.saveToXml(fileChooser.getSelectedFile());
+            }
         });
         JMenuItem importXml = new JMenuItem("Import from XML");
         importXml.addActionListener(e -> {
             //TODO open dialog panel
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setCurrentDirectory(new File("."));
+            int returnVal = fileChooser.showDialog(this, "Import");
+            if(returnVal == JFileChooser.APPROVE_OPTION) {
+                contactData.loadFromXml(fileChooser.getSelectedFile());
+            }
         });
-        JMenuItem saveOut = new JMenuItem("Save to .dat");
+        JMenuItem saveOut = new JMenuItem("Save out");
         saveOut.addActionListener(e -> {
-            //TODO open dialog panel
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.setCurrentDirectory(new File("."));
             int returnVal = fileChooser.showDialog(this, "Save");
             if(returnVal == JFileChooser.APPROVE_OPTION) {
-                System.out.println(fileChooser.getSelectedFile().getAbsolutePath());
+                contactData.saveOut(fileChooser.getSelectedFile());
             }
         });
-        JMenuItem loadIn = new JMenuItem("Load from .dat");
+        JMenuItem loadIn = new JMenuItem("Load in");
         loadIn.addActionListener(e -> {
-            //TODO open dialog panel
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setCurrentDirectory(new File("."));
+            int returnVal = fileChooser.showDialog(this, "Load");
+            if(returnVal == JFileChooser.APPROVE_OPTION) {
+                contactData.loadIn(fileChooser.getSelectedFile());
+            }
         });
         fileMenu.add(exportXml);
         fileMenu.add(importXml);

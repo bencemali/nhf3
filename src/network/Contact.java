@@ -88,6 +88,10 @@ public class Contact implements Serializable {
 
     public List<Message> getMessages() { return messages; }
 
+    public void addMessage(Message message) {
+        messages.add(message);
+    }
+
     public void receiveMessage(String message) {
         messages.add(new Message(message, false));
         if(messageListener != null) {

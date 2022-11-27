@@ -5,8 +5,6 @@ import network.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Main {
     private static ContactData contactData;
@@ -15,7 +13,8 @@ public class Main {
 
     public static void main(String[] args) {
         FlatLightLaf.setup();
-        contactData = loadData();
+        contactData = new ContactData();
+        contactData.loadIn(new File("contacts.dat"));
         server = new Server(contactData);
         server.start();
         frame = new MainFrame(contactData);
@@ -23,29 +22,9 @@ public class Main {
             @Override
             public void windowClosing(WindowEvent e) {
                 server.closeAllSockets();
-                saveData(contactData);
+                contactData.saveOut(new File("contacts.dat"));
+                System.exit(0);
             }
         });
-    }
-
-    static private ContactData loadData() {
-        ContactData data;
-        try {
-            ObjectInputStream ois = new ObjectInputStream(new FileInputStream("contacts.dat"));
-            data = new ContactData((List<Contact>)ois.readObject());
-            ois.close();
-        } catch (Exception e) {
-            data = new ContactData(new ArrayList<>());
-        }
-        return data;
-    }
-
-    static private void saveData(ContactData data) {
-        try {
-            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("contacts.dat"));
-            oos.writeObject(data.contacts);
-            oos.close();
-        } catch(IOException e) {}
-        System.exit(0);
     }
 }
