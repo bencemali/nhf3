@@ -57,10 +57,12 @@ public class Connection {
      */
     public Connection(Contact contact) {
         this.contact = contact;
-        this.open = false;
+        open = false;
         try {
             if(InetAddress.getByName(contact.getIp()).isReachable(800)) {
                 socket = new Socket(contact.getIp(), serverPort);
+                if(socket != null) {
+                }
                 open = true;
                 output = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
                 input = new BufferedReader(new InputStreamReader(socket.getInputStream()));

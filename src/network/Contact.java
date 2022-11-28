@@ -70,11 +70,13 @@ public class Contact implements Serializable {
         this.ipAddress = ipAddress;
         messages = new ArrayList<>();
         this.connection = connection;
-        connection.setListener((up) -> {
-            if(connectionListener != null) {
-                connectionListener.connectionChanged(up);
-            }
-        });
+        if(connection != null) {
+            connection.setListener((up) -> {
+                if (connectionListener != null) {
+                    connectionListener.connectionChanged(up);
+                }
+            });
+        }
         messageListener = null;
         connectionListener = null;
     }
@@ -92,7 +94,9 @@ public class Contact implements Serializable {
             connection.dispose();
             connection = new Connection(this);
             connection.setListener((up) -> {
-                connectionListener.connectionChanged(up);
+                if(connectionListener != null) {
+                    connectionListener.connectionChanged(up);
+                }
             });
         }
     }

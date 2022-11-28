@@ -25,29 +25,29 @@ public class ContactDataTest {
 
     @Test
     public void getSetTest() {
-        assertEquals(0, contactData.getRowCount());
-        assertEquals(1, contactData.getColumnCount());
+        assertEquals("Initial row count doesn't match", 0, contactData.getRowCount());
+        assertEquals("Initial column coun't doesn't match", 1, contactData.getColumnCount());
 
         Contact contact = new Contact("name1", "ip1");
         contactData.addContact(contact);
-        assertEquals(1, contactData.getRowCount());
-        assertEquals("name1", contactData.getValueAt(0, 0));
+        assertEquals("Row count after insert doesn't match", 1, contactData.getRowCount());
+        assertEquals("GetValueAt doesn't match", "name1", contactData.getValueAt(0, 0));
 
         contactData.addContact("name2", "ip1");
         contactData.addContact("name1", "ip2");
-        assertEquals(1, contactData.getRowCount());
+        assertEquals("Insertion with same parameters", 1, contactData.getRowCount());
 
         contactData.addContact(new Contact("name2", "ip1"));
         contactData.addContact(new Contact("name1", "ip2"));
-        assertEquals(1, contactData.getRowCount());
+        assertEquals("Insertion with same parameters", 1, contactData.getRowCount());
 
-        assertEquals(String.class, contactData.getColumnClass(0));
+        assertEquals("Column class doesn't match", String.class, contactData.getColumnClass(0));
 
         contactData.deleteContact(null);
-        assertEquals(1, contactData.getRowCount());
+        assertEquals("Delete null", 1, contactData.getRowCount());
 
         contactData.deleteContact(contact);
-        assertEquals(0, contactData.getRowCount());
+        assertEquals("Delete contact", 0, contactData.getRowCount());
     }
 
     @Test

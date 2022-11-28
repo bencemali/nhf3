@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * The thread waiting for the sockets of remote hosts to connect to this host
@@ -25,6 +26,11 @@ public class Server extends Thread {
     private ServerSocket serverSocket;
 
     /**
+     * The running state of the thread
+     */
+    private final AtomicBoolean running = new AtomicBoolean(false);
+
+    /**
      * Constructor
      *
      * @param contactData the list of contacts
@@ -42,26 +48,34 @@ public class Server extends Thread {
      */
     @Override
     synchronized public void run() {
+        running.set(true);
         Socket socket = null;
-        while(serverSocket != null) {
-            try {
-                socket = serverSocket.accept();
-            } catch(IOException e) {}
-            if(socket != null) {
-                if(contactData != null) {
-                    synchronized (contactData) {
-                        if (!contactData.haveContact(socket.getInetAddress().toString())) {
-                            Connection connection = new Connection(null, socket);
-                            Contact contact = new Contact("New connection", socket.getInetAddress().toString(), connection);
-                            contactData.addContact(contact);
-                            connection.setContact(contact);
-                        } else {
-                            Contact contact = contactData.getContact(socket.getInetAddress().toString());
-                            contact.setConnection(new Connection(contact, socket));
+        int connected = 1;
+        if(serverSocket != null) {
+            while(running.get()) {
+                try {
+                    socket = serverSocket.accept();
+                } catch(IOException e) {}
+                if (socket != null) {
+                    if (contactData != null) {
+                        synchronized(contactData) {
+                            if (!contactData.haveContact(socket.getInetAddress().toString())) {
+                                Connection connection = new Connection(null, socket);
+                                Contact contact = new Contact("New connection " + connected++, socket.getInetAddress().toString(), connection);
+                                contactData.addContact(contact);
+                                connection.setContact(contact);
+                            } else {
+                                Contact contact = contactData.getContact(socket.getInetAddress().toString());
+                                contact.setConnection(new Connection(contact, socket));
+                            }
                         }
                     }
                 }
             }
         }
+    }
+
+    public void dispose() {
+        running.set(false);
     }
 }

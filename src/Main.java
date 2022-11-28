@@ -41,6 +41,7 @@ public class Main {
             @Override
             public void windowClosing(WindowEvent e) {
                 contactData.dispose();
+                server.dispose();
                 contactData.saveOut(new File("contacts.dat"));
                 System.exit(0);
             }
