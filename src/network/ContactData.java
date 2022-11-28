@@ -41,8 +41,7 @@ public class ContactData extends AbstractTableModel {
      * @return number of rows
      */
     @Override
-    synchronized public int getRowCount() {
-        return contacts.size(); }
+    synchronized public int getRowCount() { return contacts.size(); }
 
     /**
      * Returns the number of columns
@@ -114,6 +113,12 @@ public class ContactData extends AbstractTableModel {
      * @param contact the existing contact
      */
     synchronized public void addContact(Contact contact) {
+        Iterator<Contact> it = contacts.iterator();
+        while(it.hasNext()) {
+            Contact c = it.next();
+            if(c.getName().equals(contact.getName())) return;
+            if(c.getIp().equals(contact.getIp())) return;
+        }
         contacts.add(contact);
         fireTableDataChanged();
     }
@@ -278,9 +283,10 @@ public class ContactData extends AbstractTableModel {
                 XMLOutputter xmlOutputter = new XMLOutputter();
                 xmlOutputter.setFormat(Format.getPrettyFormat());
                 try {
-                    xmlOutputter.output(document, new FileOutputStream(file));
-                } catch (Exception e) {
-                }
+                    FileOutputStream fos = new FileOutputStream(file);
+                    xmlOutputter.output(document, fos);
+                    fos.close();
+                } catch (Exception e) {}
             }
         }
     }
