@@ -38,7 +38,6 @@ public class ContactDataTest {
         assertEquals("Insertion with same parameters", 1, contactData.getRowCount());
 
         contactData.addContact(new Contact("name2", "ip1"));
-        contactData.addContact(new Contact("name1", "ip2"));
         assertEquals("Insertion with same parameters", 1, contactData.getRowCount());
 
         assertEquals("Column class doesn't match", String.class, contactData.getColumnClass(0));

@@ -1,5 +1,6 @@
 package test;
 
+import com.formdev.flatlaf.IntelliJTheme;
 import network.*;
 import org.junit.*;
 
@@ -54,6 +55,9 @@ public class ContactTest {
     public void messageTest() {
         Contact valid2 = contactData.getContact(0);
         valid2.sendMessage("hello");
+        try {
+            Thread.sleep(100);
+        } catch(Exception e) {}
         assertEquals("hello", valid.getMessages().get(0).getString());
         assertFalse(valid.getMessages().get(0).getOwned());
         valid.sendMessage("olleh");
