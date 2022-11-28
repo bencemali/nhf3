@@ -1,9 +1,13 @@
 package network;
 
+import com.google.common.net.InetAddresses;
+
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+
 
 /**
  * Represents a network connection
@@ -56,23 +60,39 @@ public class Connection {
      */
     public Connection(Contact contact) {
         this.contact = contact;
+        socket = null;
         open = false;
         try {
-            if(InetAddress.getByName(contact.getIp()).isReachable(800)) {
-                socket = new Socket(contact.getIp(), serverPort);
-                if(socket != null) {
+            if(InetAddresses.isInetAddress(this.contact.getIp()) && InetAddress.getByName(this.contact.getIp()).isReachable(800)) {
+                ExecutorService executor = Executors.newSingleThreadExecutor();
+                Future future = executor.submit(new ConnectThread(contact.getIp(), serverPort));
+                try {
+                    future.get(1, TimeUnit.SECONDS);
+                } catch(TimeoutException e) {
+                } catch(Exception e) {
+                } finally {
+                    future.cancel(true);
+                    executor.shutdownNow();
                 }
-                open = true;
-                output = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
-                input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                inputHandler = new InputHandlerThread(input, contact);
-                inputHandler.start();
+
+                if(socket != null) {
+                    open = true;
+                    try {
+                        output = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
+                        input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                    } catch(IOException e) {}
+                    inputHandler = new InputHandlerThread(input, contact);
+                    inputHandler.start();
+                } else {
+                    output = null;
+                    input = null;
+                }
             } else {
                 socket = null;
                 output = null;
                 input = null;
             }
-        } catch(Exception e) {}
+        } catch(IOException e) {}
     }
 
     /**
@@ -149,8 +169,7 @@ public class Connection {
         if(socket != null) {
             try {
                 socket.close();
-            } catch (Exception e) {
-            }
+            } catch (Exception e) {}
         }
         if(inputHandler != null) {
             if(inputHandler.isRunning()) {
@@ -166,6 +185,26 @@ public class Connection {
      */
     synchronized public void setListener(ConnectionListener listener) {
         this.listener = listener;
+    }
+
+    /**
+     * Thread for opening a network connection through a Socket
+     */
+    class ConnectThread extends Thread {
+        private final String ip;
+        private final int port;
+
+        public ConnectThread(String ip, int port) {
+            this.ip = ip;
+            this.port = port;
+        }
+
+        @Override
+        public void run() {
+            try {
+                Connection.this.socket = new Socket(ip, port);
+            } catch(IOException e) {}
+        }
     }
 
     /**

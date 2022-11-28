@@ -1,22 +1,20 @@
 package test;
 
 import network.*;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
 import java.util.List;
 
 import static org.junit.Assert.*;
 
 public class ContactTest {
-    ContactData contactData;
-    Contact contact;
-    Contact valid;
-    Server server;
+    private static Contact contact;
+    private static Contact valid;
+    private static ContactData contactData;
+    private static Server server;
 
-    @Before
-    public void setUp() {
+    @BeforeClass
+    public static void setUp() {
         contactData = new ContactData();
         server = new Server(contactData);
         server.start();
@@ -24,11 +22,12 @@ public class ContactTest {
         contact = new Contact("name", "ip", null);
     }
 
-    @After
-    public void finish() {
+    @AfterClass
+    public static void finish() {
+        server.dispose();
+        contactData.dispose();
         contact.dispose();
         valid.dispose();
-        server.dispose();
     }
 
     @Test

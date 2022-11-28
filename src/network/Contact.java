@@ -94,10 +94,13 @@ public class Contact implements Serializable {
             connection.dispose();
             connection = new Connection(this);
             connection.setListener((up) -> {
-                if(connectionListener != null) {
+                if (connectionListener != null) {
                     connectionListener.connectionChanged(up);
                 }
             });
+            if(connection.isOpen() && connectionListener != null) {
+                connectionListener.connectionChanged(true);
+            }
         }
     }
 

@@ -96,7 +96,9 @@ public class ChatPane extends JPanel {
         if(focusedContact != null) {
             messageTextField.setEditable(focusedContact.isConnected());
             List<Message> messages = focusedContact.getMessages();
-            focusedContact.connect();
+            if(!focusedContact.isConnected()) {
+                focusedContact.connect();
+            }
             Border line = BorderFactory.createLineBorder(Color.DARK_GRAY, 1);
             Border margin1 = new EmptyBorder(6,12,6,12);
             Border margin2 = new EmptyBorder(4, 4, 4, 4);
@@ -108,7 +110,6 @@ public class ChatPane extends JPanel {
             double ratio = 1/num;
             for (Message message : messages) {
                 gbc.weightx = 0.5;
-                //gbc.weighty = 0.1;
                 JLabel messageLabel = new JLabel(message.getString());
                 messageLabel.setBorder(border);
                 if (message.getOwned()) {
