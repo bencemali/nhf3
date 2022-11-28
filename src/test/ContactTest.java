@@ -1,6 +1,5 @@
 package test;
 
-import com.formdev.flatlaf.IntelliJTheme;
 import network.*;
 import org.junit.*;
 
@@ -8,6 +7,9 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
+/**
+ * Tests the Contact class
+ */
 public class ContactTest {
     private static Contact contact;
     private static Contact valid;

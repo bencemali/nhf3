@@ -9,6 +9,9 @@ import java.io.File;
 
 import static org.junit.Assert.assertEquals;
 
+/**
+ * Tests the ContactData class
+ */
 public class ContactDataTest {
     ContactData contactData;
     Contact contact1;

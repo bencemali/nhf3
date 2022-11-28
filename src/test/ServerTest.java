@@ -9,6 +9,9 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
+/**
+ * Tests the Server class
+ */
 public class ServerTest {
     ContactData contactData;
     Server server;
