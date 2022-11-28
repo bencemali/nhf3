@@ -116,7 +116,7 @@ public class ContactData extends AbstractTableModel {
         Iterator<Contact> it = contacts.iterator();
         while(it.hasNext()) {
             Contact c = it.next();
-            if(c.getName().equals(contact.getName())) return;
+            //if(c.getName().equals(contact.getName())) return;
             if(c.getIp().equals(contact.getIp())) return;
         }
         contacts.add(contact);

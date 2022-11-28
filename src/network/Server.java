@@ -47,10 +47,9 @@ public class Server extends Thread {
      * The "main" method of the thread
      */
     @Override
-    synchronized public void run() {
+    public void run() {
         running.set(true);
         Socket socket = null;
-        int connected = 1;
         if(serverSocket != null) {
             while(running.get()) {
                 try {
@@ -61,7 +60,7 @@ public class Server extends Thread {
                         synchronized(contactData) {
                             if (!contactData.haveContact(socket.getInetAddress().toString())) {
                                 Connection connection = new Connection(null, socket);
-                                Contact contact = new Contact("New connection " + connected++, socket.getInetAddress().toString(), connection);
+                                Contact contact = new Contact("New connection", socket.getInetAddress().toString(), connection);
                                 contactData.addContact(contact);
                                 connection.setContact(contact);
                             } else {
