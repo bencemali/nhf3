@@ -73,7 +73,13 @@ public class Server extends Thread {
         }
     }
 
+    /**
+     * Stops the thead
+     */
     public void dispose() {
         running.set(false);
+        try {
+            serverSocket.close();
+        } catch(IOException e) {}
     }
 }

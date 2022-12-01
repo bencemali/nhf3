@@ -34,6 +34,9 @@ public class ServerTest {
     @Test
     public void newConnectionTest() {
         contact = new Contact("name1", "127.0.0.1");
+        try {
+            Thread.sleep(1000);
+        } catch(Exception e) {}
         assertEquals(1, contactData.getRowCount());
     }
 }

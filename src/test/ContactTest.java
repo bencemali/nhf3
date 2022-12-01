@@ -58,7 +58,7 @@ public class ContactTest {
         Contact valid2 = contactData.getContact(0);
         valid2.sendMessage("hello");
         try {
-            Thread.sleep(100);
+            Thread.sleep(1000);
         } catch(Exception e) {}
         assertEquals("hello", valid.getMessages().get(0).getString());
         assertFalse(valid.getMessages().get(0).getOwned());
